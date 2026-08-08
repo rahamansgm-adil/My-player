@@ -3,168 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Master Player (TV Optimized)</title>
-    <style>
-        body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: #000; overflow: hidden; font-family: sans-serif; }
-        
-        /* Positioned slightly larger for TV screens */
-        .controls { position: absolute; top: 20px; right: 20px; z-index: 10; }
-        
-        select { 
-            background: rgba(0,0,0,0.75); 
-            color: white; 
-            border: 2px solid #555; 
-            padding: 12px; 
-            border-radius: 6px; 
-            cursor: pointer; 
-            outline: none; 
-            max-width: 250px; 
-            font-size: 16px;
-            font-weight: bold;
-            transition: all 0.2s ease-in-out;
-        }
-        
-        select:hover { background: rgba(0,0,0,0.95); }
-        
-        /* 1. ANDROID TV FOCUS STATE: Makes it obvious when the TV remote is selecting it */
-        select:focus {
-            border-color: #00BFFF;
-            background: #111;
-            box-shadow: 0 0 20px rgba(0, 191, 255, 0.8);
-            transform: scale(1.05);
-        }
-
-        /* 3. TOAST NOTIFICATION: Large text overlay for couch viewing */
-        #tv-toast {
-            position: fixed; 
-            bottom: 50px; 
-            left: 50%; 
-            transform: translateX(-50%);
-            background: rgba(0, 191, 255, 0.9); 
-            color: white; 
-            padding: 12px 30px;
-            border-radius: 8px; 
-            font-size: 20px; 
-            font-weight: bold;
-            opacity: 0; 
-            transition: opacity 0.3s; 
-            pointer-events: none; 
-            z-index: 100;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.6);
-        }
-
-        iframe { width: 100%; height: 100%; border: none; position: absolute; top: 0; left: 0; }
-    </style>
-</head>
-<body>
-
-    <div class="controls">
-        <!-- autofocus added so the TV remote selects it automatically on load -->
-        <select id="serverDropdown" onchange="changeServer()" autofocus>
-            <option value="vidsrc" data-movie="https://vidsrc.sbs/embed/movie/{tmdb_id}?autoplay=1" data-tv="https://vidsrc.sbs/embed/tv/{tmdb_id}/{season}/{episode}?autoplay=1">vidsrc (Default)</option>
-            <option value="111movies" data-movie="https://111movies.net/movie/{tmdb_id}" data-tv="https://111movies.net/tv/{tmdb_id}/{season}/{episode}">111movies</option>
-            <option value="2embed" data-movie="https://www.2embed.cc/embed/{tmdb_id}" data-tv="https://www.2embed.skin/embedtv/{tmdb_id}&s={season}&e={episode}">2embed</option>
-            <option value="cinesrc" data-movie="https://cinesrc.st/embed/movie/{tmdb_id}?s=1&e=1&color=FF1493&autoplay=true&autonext=true" data-tv="https://cinesrc.st/embed/tv/{tmdb_id}?s={season}&e={episode}&color=FF1493&autoplay=true&autonext=true">cinesrc</option>
-            <option value="cinezo" data-movie="https://player.cinezo.live/embed/movie/{tmdb_id}" data-tv="https://player.cinezo.live/embed/tv/{tmdb_id}/{season}/{episode}">cinezo</option>
-            <option value="embedmaster" data-movie="https://embedmaster.link/1o0iqztipj3gso39/movie/{tmdb_id}" data-tv="https://embedmaster.link/1o0iqztipj3gso39/tv/{tmdb_id}/{season}/{episode}">embedmaster</option>
-            <option value="filmu" data-movie="https://embed.filmu.in/movie/{tmdb_id}" data-tv="https://embed.filmu.in/tv/{tmdb_id}/{season}/{episode}">filmu</option>
-            <option value="multiembed" data-movie="https://multiembed.mov/?video_id={tmdb_id}&tmdb=1" data-tv="https://multiembed.mov/?video_id={tmdb_id}&tmdb=1&s={season}&e={episode}">multiembed</option>
-            <option value="nxsha" data-movie="https://nxsha.space/embed/movie/{tmdb_id}" data-tv="https://nxsha.space/embed/tv/{tmdb_id}/{season}/{episode}">nxsha</option>
-            <option value="peachify" data-movie="https://peachify.pro/embed/movie/{tmdb_id}" data-tv="https://peachify.pro/embed/tv/{tmdb_id}/{season}/{episode}">peachify</option>
-            <option value="vidbolt" data-movie="https://vidbolt.pro/movie/{tmdb_id}?autoPlay=true" data-tv="https://vidbolt.pro/tv/{tmdb_id}/{season}/{episode}?autoPlay=true">vidbolt</option>
-            <option value="vidcore" data-movie="https://vidcore.org/embed/movie/{tmdb_id}" data-tv="https://vidcore.org/embed/tv/{tmdb_id}/{season}/{episode}">vidcore</option>
-            <option value="videasy" data-movie="https://player.videasy.net/movie/{tmdb_id}" data-tv="https://player.videasy.net/tv/{tmdb_id}/{season}/{episode}">videasy</option>
-            <option value="vidfast" data-movie="https://vidfast.vc/movie/{tmdb_id}?autoPlay=true" data-tv="https://vidfast.vc/tv/{tmdb_id}/{season}/{episode}?autoPlay=true">vidfast</option>
-            <option value="vidking" data-movie="https://www.vidking.net/embed/movie/{tmdb_id}?autoPlay=true&nextEpisode=true&episodeSelector=true" data-tv="https://www.vidking.net/embed/tv/{tmdb_id}/{season}/{episode}?autoPlay=true&nextEpisode=true&episodeSelector=true">vidking</option>
-            <option value="vidlink" data-movie="https://vidlink.pro/movie/{tmdb_id}?primaryColor=63b8bc&secondaryColor=a2a2a2&iconColor=eefdec&icons=default&player=jw&title=true&poster=true&autoplay=true&nextbutton=true" data-tv="https://vidlink.pro/tv/{tmdb_id}/{season}/{episode}?primaryColor=63b8bc&secondaryColor=a2a2a2&iconColor=eefdec&icons=default&player=jw&title=true&poster=true&autoplay=true&nextbutton=true">vidlink</option>
-            <option value="vidnest" data-movie="https://vidnest.fun/movie/{tmdb_id}" data-tv="https://vidnest.fun/tv/{tmdb_id}/{season}/{episode}">vidnest</option>
-            <option value="vidsrc-embed" data-movie="https://vidsrc-embed.ru/embed/movie?tmdb={tmdb_id}" data-tv="https://vidsrc-embed.ru/embed/tv?tmdb={tmdb_id}&season={season}&episode={episode}">vidsrc-embed</option>
-            <option value="zxcstream" data-movie="https://test.zxcstream.xyz/player/movie/{tmdb_id}?server=0&debug=false&subLang=english" data-tv="https://test.zxcstream.xyz/player/tv/{tmdb_id}/{season}/{episode}?server=0&debug=false&subLang=english">zxcstream</option>
-        </select>
-    </div>
-
-    <div id="tv-toast">Switched Server</div>
-
-    <iframe id="videoFrame" allowfullscreen></iframe>
-
-    <script>
-        const urlParams = new URLSearchParams(window.location.search);
-        const tmdb_id = urlParams.get('tmdb');
-        const season = urlParams.get('s');
-        const episode = urlParams.get('e');
-
-        function showToast(text) {
-            const toast = document.getElementById("tv-toast");
-            toast.innerText = "Switched to: " + text;
-            toast.style.opacity = "1";
-            
-            // Hide the toast after 3 seconds
-            clearTimeout(toast.timeout);
-            toast.timeout = setTimeout(() => { toast.style.opacity = "0"; }, 3000);
-        }
-
-        function changeServer() {
-            const dropdown = document.getElementById("serverDropdown");
-            const selectedOption = dropdown.options[dropdown.selectedIndex];
-            
-            let finalUrl = "";
-
-            if (season && episode) {
-                finalUrl = selectedOption.getAttribute("data-tv")
-                    .replace("{tmdb_id}", tmdb_id)
-                    .replace("{season}", season)
-                    .replace("{episode}", episode);
-            } else {
-                finalUrl = selectedOption.getAttribute("data-movie")
-                    .replace("{tmdb_id}", tmdb_id);
-            }
-
-            document.getElementById("videoFrame").src = finalUrl;
-            
-            // Trigger the TV pop-up message
-            showToast(selectedOption.text);
-        }
-
-        // 2. ANDROID TV D-PAD LOGIC: Allow Left/Right remote buttons to cycle servers
-        document.addEventListener('keydown', function(e) {
-            const dropdown = document.getElementById("serverDropdown");
-            
-            // Only capture arrows if the dropdown is glowing/focused
-            if (document.activeElement === dropdown) {
-                let currentIndex = dropdown.selectedIndex;
-                let maxIndex = dropdown.options.length - 1;
-
-                if (e.key === "ArrowRight") {
-                    e.preventDefault(); // Stop page scrolling
-                    dropdown.selectedIndex = currentIndex < maxIndex ? currentIndex + 1 : 0;
-                    changeServer();
-                } else if (e.key === "ArrowLeft") {
-                    e.preventDefault();
-                    dropdown.selectedIndex = currentIndex > 0 ? currentIndex - 1 : maxIndex;
-                    changeServer();
-                }
-            }
-        });
-
-        // Load default player on boot (without triggering the toast text)
-        window.onload = () => {
-            const dropdown = document.getElementById("serverDropdown");
-            const selectedOption = dropdown.options[dropdown.selectedIndex];
-            
-            let finalUrl = season && episode 
-                ? selectedOption.getAttribute("data-tv").replace("{tmdb_id}", tmdb_id).replace("{season}", season).replace("{episode}", episode)
-                : selectedOption.getAttribute("data-movie").replace("{tmdb_id}", tmdb_id);
-
-            document.getElementById("videoFrame").src = finalUrl;
-        };
-    </script>
-</body>
-</html>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Master Player (TV & Mobile Optimized)</title>
     <style>
         body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: #000; overflow: hidden; font-family: sans-serif; }
@@ -184,7 +22,7 @@
             transition: opacity 0.4s ease-in-out; /* Smooth fade effect */
         }
         
-        /* This class is applied automatically after 20 seconds */
+        /* This class is applied automatically after 5 seconds */
         .controls.hidden {
             opacity: 0;
             pointer-events: none; /* Prevents invisible clicks */
@@ -286,11 +124,11 @@
                 dropdown.focus();
             }
 
-            // Clear the old timer and start a fresh 20-second countdown
+            // Clear the old timer and start a fresh 5-second countdown
             clearTimeout(idleTimer);
             idleTimer = setTimeout(() => {
                 menuContainer.classList.add("hidden");
-            }, 20000);
+            }, 5000); // <-- CHANGED TO 5000 MILLISECONDS (5 SECONDS)
         }
 
         // Detect taps near the top of the screen, or general mouse movement to wake menu
@@ -363,7 +201,7 @@
             }
         });
 
-        // Start the player and begin the 20-second countdown immediately on load
+        // Start the player and begin the 5-second countdown immediately on load
         window.onload = () => {
             const dropdown = document.getElementById("serverDropdown");
             const selectedOption = dropdown.options[dropdown.selectedIndex];
@@ -379,3 +217,4 @@
     </script>
 </body>
 </html>
+
