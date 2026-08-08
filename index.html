@@ -5,15 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Master Player</title>
     <style>
-        /* This removes margins so it fits perfectly inside your iframe */
         body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: #000; overflow: hidden; font-family: sans-serif; }
-        
-        /* Styles the dropdown menu to float at the top */
         .controls { position: absolute; top: 10px; right: 10px; z-index: 10; }
-        select { background: rgba(0,0,0,0.7); color: white; border: 1px solid #555; padding: 8px; border-radius: 4px; cursor: pointer; outline: none; }
+        select { background: rgba(0,0,0,0.7); color: white; border: 1px solid #555; padding: 8px; border-radius: 4px; cursor: pointer; outline: none; max-width: 200px; }
         select:hover { background: rgba(0,0,0,0.9); }
-
-        /* The actual video player fills the whole screen behind the dropdown */
         iframe { width: 100%; height: 100%; border: none; position: absolute; top: 0; left: 0; }
     </style>
 </head>
@@ -21,30 +16,31 @@
 
     <div class="controls">
         <select id="serverDropdown" onchange="changeServer()">
-            <!-- We store the Movie URL in 'data-movie' and TV URL in 'data-tv' -->
-            <option value="vidsrc" 
-                data-movie="https://vidsrc.sbs/embed/movie/{tmdb_id}?autoplay=1" 
-                data-tv="https://vidsrc.sbs/embed/tv/{tmdb_id}/{season}/{episode}?autoplay=1">
-                Server 1 (VidSrc)
-            </option>
-            <option value="vidcore" 
-                data-movie="https://vidcore.org/embed/movie/{tmdb_id}" 
-                data-tv="https://vidcore.org/embed/tv/{tmdb_id}/{season}/{episode}">
-                Server 2 (VidCore)
-            </option>
-            <option value="cinezo" 
-                data-movie="https://player.cinezo.live/embed/movie/{tmdb_id}" 
-                data-tv="https://player.cinezo.live/embed/tv/{tmdb_id}/{season}/{episode}">
-                Server 3 (Cinezo)
-            </option>
-            <!-- Add the rest of your servers here using the same format -->
+            <option value="vidsrc" data-movie="https://vidsrc.sbs/embed/movie/{tmdb_id}?autoplay=1" data-tv="https://vidsrc.sbs/embed/tv/{tmdb_id}/{season}/{episode}?autoplay=1">vidsrc (Default)</option>
+            <option value="111movies" data-movie="https://111movies.net/movie/{tmdb_id}" data-tv="https://111movies.net/tv/{tmdb_id}/{season}/{episode}">111movies</option>
+            <option value="2embed" data-movie="https://www.2embed.cc/embed/{tmdb_id}" data-tv="https://www.2embed.skin/embedtv/{tmdb_id}&s={season}&e={episode}">2embed</option>
+            <option value="cinesrc" data-movie="https://cinesrc.st/embed/movie/{tmdb_id}?s=1&e=1&color=FF1493&autoplay=true&autonext=true" data-tv="https://cinesrc.st/embed/tv/{tmdb_id}?s={season}&e={episode}&color=FF1493&autoplay=true&autonext=true">cinesrc</option>
+            <option value="cinezo" data-movie="https://player.cinezo.live/embed/movie/{tmdb_id}" data-tv="https://player.cinezo.live/embed/tv/{tmdb_id}/{season}/{episode}">cinezo</option>
+            <option value="embedmaster" data-movie="https://embedmaster.link/1o0iqztipj3gso39/movie/{tmdb_id}" data-tv="https://embedmaster.link/1o0iqztipj3gso39/tv/{tmdb_id}/{season}/{episode}">embedmaster</option>
+            <option value="filmu" data-movie="https://embed.filmu.in/movie/{tmdb_id}" data-tv="https://embed.filmu.in/tv/{tmdb_id}/{season}/{episode}">filmu</option>
+            <option value="multiembed" data-movie="https://multiembed.mov/?video_id={tmdb_id}&tmdb=1" data-tv="https://multiembed.mov/?video_id={tmdb_id}&tmdb=1&s={season}&e={episode}">multiembed</option>
+            <option value="nxsha" data-movie="https://nxsha.space/embed/movie/{tmdb_id}" data-tv="https://nxsha.space/embed/tv/{tmdb_id}/{season}/{episode}">nxsha</option>
+            <option value="peachify" data-movie="https://peachify.pro/embed/movie/{tmdb_id}" data-tv="https://peachify.pro/embed/tv/{tmdb_id}/{season}/{episode}">peachify</option>
+            <option value="vidbolt" data-movie="https://vidbolt.pro/movie/{tmdb_id}?autoPlay=true" data-tv="https://vidbolt.pro/tv/{tmdb_id}/{season}/{episode}?autoPlay=true">vidbolt</option>
+            <option value="vidcore" data-movie="https://vidcore.org/embed/movie/{tmdb_id}" data-tv="https://vidcore.org/embed/tv/{tmdb_id}/{season}/{episode}">vidcore</option>
+            <option value="videasy" data-movie="https://player.videasy.net/movie/{tmdb_id}" data-tv="https://player.videasy.net/tv/{tmdb_id}/{season}/{episode}">videasy</option>
+            <option value="vidfast" data-movie="https://vidfast.vc/movie/{tmdb_id}?autoPlay=true" data-tv="https://vidfast.vc/tv/{tmdb_id}/{season}/{episode}?autoPlay=true">vidfast</option>
+            <option value="vidking" data-movie="https://www.vidking.net/embed/movie/{tmdb_id}?autoPlay=true&nextEpisode=true&episodeSelector=true" data-tv="https://www.vidking.net/embed/tv/{tmdb_id}/{season}/{episode}?autoPlay=true&nextEpisode=true&episodeSelector=true">vidking</option>
+            <option value="vidlink" data-movie="https://vidlink.pro/movie/{tmdb_id}?primaryColor=63b8bc&secondaryColor=a2a2a2&iconColor=eefdec&icons=default&player=jw&title=true&poster=true&autoplay=true&nextbutton=true" data-tv="https://vidlink.pro/tv/{tmdb_id}/{season}/{episode}?primaryColor=63b8bc&secondaryColor=a2a2a2&iconColor=eefdec&icons=default&player=jw&title=true&poster=true&autoplay=true&nextbutton=true">vidlink</option>
+            <option value="vidnest" data-movie="https://vidnest.fun/movie/{tmdb_id}" data-tv="https://vidnest.fun/tv/{tmdb_id}/{season}/{episode}">vidnest</option>
+            <option value="vidsrc-embed" data-movie="https://vidsrc-embed.ru/embed/movie?tmdb={tmdb_id}" data-tv="https://vidsrc-embed.ru/embed/tv?tmdb={tmdb_id}&season={season}&episode={episode}">vidsrc-embed</option>
+            <option value="zxcstream" data-movie="https://test.zxcstream.xyz/player/movie/{tmdb_id}?server=0&debug=false&subLang=english" data-tv="https://test.zxcstream.xyz/player/tv/{tmdb_id}/{season}/{episode}?server=0&debug=false&subLang=english">zxcstream</option>
         </select>
     </div>
 
     <iframe id="videoFrame" allowfullscreen></iframe>
 
     <script>
-        // 1. Grab the TMDB ID, Season, and Episode from the URL
         const urlParams = new URLSearchParams(window.location.search);
         const tmdb_id = urlParams.get('tmdb');
         const season = urlParams.get('s');
@@ -56,24 +52,21 @@
             
             let finalUrl = "";
 
-            // 2. Check if it is a TV show or a Movie based on URL parameters
             if (season && episode) {
-                // It's a TV Show
+                // TV Show logic
                 finalUrl = selectedOption.getAttribute("data-tv")
                     .replace("{tmdb_id}", tmdb_id)
                     .replace("{season}", season)
                     .replace("{episode}", episode);
             } else {
-                // It's a Movie
+                // Movie logic
                 finalUrl = selectedOption.getAttribute("data-movie")
                     .replace("{tmdb_id}", tmdb_id);
             }
 
-            // 3. Load the URL into the iframe
             document.getElementById("videoFrame").src = finalUrl;
         }
 
-        // Load the first server automatically when it boots up
         window.onload = changeServer;
     </script>
 </body>
