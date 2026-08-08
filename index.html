@@ -6,18 +6,11 @@
     <title>Master Player (TV & Mobile Optimized)</title>
     <style>
         body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: #000; overflow: hidden; font-family: sans-serif; }
-        
-        /* The transparent zone that catches mobile taps to wake the menu */
-        #wakeUpZone {
-            position: absolute;
-            top: 0; left: 0; right: 0; height: 15%;
-            z-index: 5;
-        }
 
-        /* Positions the container in the TOP MIDDLE */
+        /* Positions the container exactly in the TOP MIDDLE, taking up only 50x50 pixels */
         .controls { 
             position: absolute; 
-            top: 20px; 
+            top: 15px; 
             left: 50%; 
             transform: translateX(-50%);
             z-index: 10; 
@@ -29,10 +22,14 @@
         /* Applied automatically after 5 seconds */
         .controls.hidden {
             opacity: 0;
-            pointer-events: none; 
+            /* We DO NOT use pointer-events: none here, so the invisible 50x50 square can still be tapped to wake it up */
         }
         
-        /* The invisible dropdown that sits on top of the icon */
+        /* Disable the actual dropdown menu while it's hidden so the wake-up tap doesn't open the list */
+        .controls.hidden select {
+            pointer-events: none;
+        }
+        
         select { 
             position: absolute;
             top: 0; 
@@ -45,7 +42,6 @@
             z-index: 2;
         }
         
-        /* The visible circular icon wrapper */
         .icon-wrapper {
             width: 100%;
             height: 100%;
@@ -56,10 +52,9 @@
             align-items: center;
             justify-content: center;
             transition: all 0.2s ease-in-out;
-            pointer-events: none; /* Lets clicks pass through to the select tag */
+            pointer-events: none; 
         }
 
-        /* When the TV remote focuses the invisible select, make the icon glow! */
         select:focus + .icon-wrapper {
             border-color: #00BFFF;
             background: #111;
@@ -67,7 +62,6 @@
             transform: scale(1.15);
         }
 
-        /* Large text overlay for couch viewing */
         #tv-toast {
             position: fixed; 
             bottom: 50px; 
@@ -91,13 +85,9 @@
 </head>
 <body>
 
-    <!-- Invisible div catches taps when menu is asleep -->
-    <div id="wakeUpZone"></div>
-
     <!-- The Top Middle Icon Button -->
     <div class="controls" id="menuContainer">
         
-        <!-- The invisible dropdown is placed FIRST so we can style the icon based on its focus -->
         <select id="serverDropdown" onchange="changeServer()" autofocus>
             <option value="vidsrc" data-movie="https://vidsrc.sbs/embed/movie/{tmdb_id}?autoplay=1" data-tv="https://vidsrc.sbs/embed/tv/{tmdb_id}/{season}/{episode}?autoplay=1">vidsrc (Default)</option>
             <option value="111movies" data-movie="https://111movies.net/movie/{tmdb_id}" data-tv="https://111movies.net/tv/{tmdb_id}/{season}/{episode}">111movies</option>
@@ -120,7 +110,6 @@
             <option value="zxcstream" data-movie="https://test.zxcstream.xyz/player/movie/{tmdb_id}?server=0&debug=false&subLang=english" data-tv="https://test.zxcstream.xyz/player/tv/{tmdb_id}/{season}/{episode}?server=0&debug=false&subLang=english">zxcstream</option>
         </select>
 
-        <!-- The visible SVG Server Icon -->
         <div class="icon-wrapper">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect>
@@ -142,13 +131,11 @@
         const season = urlParams.get('s');
         const episode = urlParams.get('e');
 
-        // INACTIVITY TIMER LOGIC
         let idleTimer;
+        const menuContainer = document.getElementById("menuContainer");
+        const dropdown = document.getElementById("serverDropdown");
         
         function wakeUpMenu() {
-            const menuContainer = document.getElementById("menuContainer");
-            const dropdown = document.getElementById("serverDropdown");
-            
             if (menuContainer.classList.contains("hidden")) {
                 menuContainer.classList.remove("hidden");
                 dropdown.focus();
@@ -160,10 +147,23 @@
             }, 5000); 
         }
 
-        document.getElementById("wakeUpZone").addEventListener("touchstart", wakeUpMenu);
-        document.getElementById("wakeUpZone").addEventListener("mousedown", wakeUpMenu);
+        // Only tapping the exact 50x50 area of the button wakes it up now
+        menuContainer.addEventListener("touchstart", (e) => {
+            if (menuContainer.classList.contains("hidden")) {
+                e.preventDefault(); // Prevents the dropdown from opening on the wake-up tap
+                wakeUpMenu();
+            }
+        });
+        
+        menuContainer.addEventListener("mousedown", (e) => {
+            if (menuContainer.classList.contains("hidden")) {
+                e.preventDefault();
+                wakeUpMenu();
+            }
+        });
+
+        // Desktop mouse movement still wakes it up anywhere
         window.addEventListener("mousemove", wakeUpMenu);
-        window.addEventListener("touchstart", wakeUpMenu);
 
         // UI & TV LOGIC
         function showToast(text) {
@@ -175,7 +175,6 @@
         }
 
         function changeServer() {
-            const dropdown = document.getElementById("serverDropdown");
             const selectedOption = dropdown.options[dropdown.selectedIndex];
             let finalUrl = "";
 
@@ -197,9 +196,6 @@
 
         // ANDROID TV D-PAD LOGIC
         document.addEventListener('keydown', function(e) {
-            const menuContainer = document.getElementById("menuContainer");
-            const dropdown = document.getElementById("serverDropdown");
-            
             if (menuContainer.classList.contains("hidden")) {
                 e.preventDefault();
                 wakeUpMenu();
@@ -226,7 +222,6 @@
 
         // Load default player
         window.onload = () => {
-            const dropdown = document.getElementById("serverDropdown");
             const selectedOption = dropdown.options[dropdown.selectedIndex];
             
             let finalUrl = season && episode 
