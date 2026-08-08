@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Master Player (TV & Mobile Optimized)</title>
+    <title>Master Player (Ultimate Edition)</title>
     <style>
         body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: #000; overflow: hidden; font-family: sans-serif; }
 
@@ -22,10 +22,9 @@
         /* Applied automatically after 5 seconds */
         .controls.hidden {
             opacity: 0;
-            /* We DO NOT use pointer-events: none here, so the invisible 50x50 square can still be tapped to wake it up */
         }
         
-        /* Disable the actual dropdown menu while it's hidden so the wake-up tap doesn't open the list */
+        /* Disable the actual dropdown menu while hidden so the wake-up tap doesn't open the list */
         .controls.hidden select {
             pointer-events: none;
         }
@@ -55,6 +54,7 @@
             pointer-events: none; 
         }
 
+        /* Glowing effect when focused with a TV remote or keyboard */
         select:focus + .icon-wrapper {
             border-color: #00BFFF;
             background: #111;
@@ -138,7 +138,6 @@
         function wakeUpMenu() {
             if (menuContainer.classList.contains("hidden")) {
                 menuContainer.classList.remove("hidden");
-                dropdown.focus();
             }
 
             clearTimeout(idleTimer);
@@ -147,11 +146,12 @@
             }, 5000); 
         }
 
-        // Only tapping the exact 50x50 area of the button wakes it up now
+        // Tapping/Clicking the 50x50 area wakes it up
         menuContainer.addEventListener("touchstart", (e) => {
             if (menuContainer.classList.contains("hidden")) {
-                e.preventDefault(); // Prevents the dropdown from opening on the wake-up tap
+                e.preventDefault(); 
                 wakeUpMenu();
+                dropdown.focus();
             }
         });
         
@@ -159,10 +159,11 @@
             if (menuContainer.classList.contains("hidden")) {
                 e.preventDefault();
                 wakeUpMenu();
+                dropdown.focus();
             }
         });
 
-        // Desktop mouse movement still wakes it up anywhere
+        // Moving the virtual cursor anywhere on the screen wakes it up
         window.addEventListener("mousemove", wakeUpMenu);
 
         // UI & TV LOGIC
@@ -194,17 +195,13 @@
             wakeUpMenu();
         }
 
-        // ANDROID TV D-PAD LOGIC
+        // D-PAD LOGIC FIX:
+        // We NO LONGER intercept random D-pad clicks. The clicks will pass straight down into the video player!
         document.addEventListener('keydown', function(e) {
-            if (menuContainer.classList.contains("hidden")) {
-                e.preventDefault();
-                wakeUpMenu();
-                return;
-            }
-
-            wakeUpMenu();
-            
+            // ONLY if the user has specifically moved their TV cursor onto the server icon
             if (document.activeElement === dropdown) {
+                wakeUpMenu();
+                
                 let currentIndex = dropdown.selectedIndex;
                 let maxIndex = dropdown.options.length - 1;
 
@@ -235,3 +232,4 @@
     </script>
 </body>
 </html>
+
