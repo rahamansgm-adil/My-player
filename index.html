@@ -89,7 +89,9 @@
     <div class="controls" id="menuContainer">
         
         <select id="serverDropdown" onchange="changeServer()" autofocus>
-            <option value="vidsrc" data-movie="https://vidsrc.sbs/embed/movie/{tmdb_id}?autoplay=1" data-tv="https://vidsrc.sbs/embed/tv/{tmdb_id}/{season}/{episode}?autoplay=1">vidsrc (Default)</option>
+            <!-- NXSHA IS NOW THE DEFAULT AND AT THE TOP -->
+            <option value="nxsha" data-movie="https://nxsha.space/embed/movie/{tmdb_id}" data-tv="https://nxsha.space/embed/tv/{tmdb_id}/{season}/{episode}">nxsha (Default)</option>
+            <option value="vidsrc" data-movie="https://vidsrc.sbs/embed/movie/{tmdb_id}?autoplay=1" data-tv="https://vidsrc.sbs/embed/tv/{tmdb_id}/{season}/{episode}?autoplay=1">vidsrc</option>
             <option value="111movies" data-movie="https://111movies.net/movie/{tmdb_id}" data-tv="https://111movies.net/tv/{tmdb_id}/{season}/{episode}">111movies</option>
             <option value="2embed" data-movie="https://www.2embed.cc/embed/{tmdb_id}" data-tv="https://www.2embed.skin/embedtv/{tmdb_id}&s={season}&e={episode}">2embed</option>
             <option value="cinesrc" data-movie="https://cinesrc.st/embed/movie/{tmdb_id}?s=1&e=1&color=FF1493&autoplay=true&autonext=true" data-tv="https://cinesrc.st/embed/tv/{tmdb_id}?s={season}&e={episode}&color=FF1493&autoplay=true&autonext=true">cinesrc</option>
@@ -97,7 +99,6 @@
             <option value="embedmaster" data-movie="https://embedmaster.link/1o0iqztipj3gso39/movie/{tmdb_id}" data-tv="https://embedmaster.link/1o0iqztipj3gso39/tv/{tmdb_id}/{season}/{episode}">embedmaster</option>
             <option value="filmu" data-movie="https://embed.filmu.in/movie/{tmdb_id}" data-tv="https://embed.filmu.in/tv/{tmdb_id}/{season}/{episode}">filmu</option>
             <option value="multiembed" data-movie="https://multiembed.mov/?video_id={tmdb_id}&tmdb=1" data-tv="https://multiembed.mov/?video_id={tmdb_id}&tmdb=1&s={season}&e={episode}">multiembed</option>
-            <option value="nxsha" data-movie="https://nxsha.space/embed/movie/{tmdb_id}" data-tv="https://nxsha.space/embed/tv/{tmdb_id}/{season}/{episode}">nxsha</option>
             <option value="peachify" data-movie="https://peachify.pro/embed/movie/{tmdb_id}" data-tv="https://peachify.pro/embed/tv/{tmdb_id}/{season}/{episode}">peachify</option>
             <option value="vidbolt" data-movie="https://vidbolt.pro/movie/{tmdb_id}?autoPlay=true" data-tv="https://vidbolt.pro/tv/{tmdb_id}/{season}/{episode}?autoPlay=true">vidbolt</option>
             <option value="vidcore" data-movie="https://vidcore.org/embed/movie/{tmdb_id}" data-tv="https://vidcore.org/embed/tv/{tmdb_id}/{season}/{episode}">vidcore</option>
@@ -195,8 +196,7 @@
             wakeUpMenu();
         }
 
-        // D-PAD LOGIC FIX:
-        // We NO LONGER intercept random D-pad clicks. The clicks will pass straight down into the video player!
+        // D-PAD LOGIC
         document.addEventListener('keydown', function(e) {
             // ONLY if the user has specifically moved their TV cursor onto the server icon
             if (document.activeElement === dropdown) {
@@ -232,4 +232,3 @@
     </script>
 </body>
 </html>
-
