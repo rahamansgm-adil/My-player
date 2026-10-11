@@ -89,10 +89,12 @@
     <div class="controls" id="menuContainer">
         
         <select id="serverDropdown" onchange="changeServer()" autofocus>
-            <!-- NXSHA is default, ZXC 2 is right below it -->
-            <option value="nxsha" data-movie="https://nxsha.space/embed/movie/{tmdb_id}" data-tv="https://nxsha.space/embed/tv/{tmdb_id}/{season}/{episode}">nxsha (Default)</option>
-            <option value="zxc2" data-movie="https://player.zxcstream.xyz/player/movie/{tmdb_id}" data-tv="https://player.zxcstream.xyz/player/tv/{tmdb_id}/{season}/{episode}">zxc 2</option>
+            <!-- VidStuck is now the primary default -->
+            <option value="vidstuck" data-movie="https://vidstuck.xyz/embed/movie/{tmdb_id}?branding=CineStream&loading=1&back=true" data-tv="https://vidstuck.xyz/embed/tv/{tmdb_id}/{season}/{episode}?branding=CineStream&loading=1&back=true">VidStuck (Default)</option>
             
+            <!-- Existing servers -->
+            <option value="nxsha" data-movie="https://nxsha.space/embed/movie/{tmdb_id}" data-tv="https://nxsha.space/embed/tv/{tmdb_id}/{season}/{episode}">nxsha</option>
+            <option value="zxc2" data-movie="https://player.zxcstream.xyz/player/movie/{tmdb_id}" data-tv="https://player.zxcstream.xyz/player/tv/{tmdb_id}/{season}/{episode}">zxc 2</option>
             <option value="vidsrc" data-movie="https://vidsrc.sbs/embed/movie/{tmdb_id}?autoplay=1" data-tv="https://vidsrc.sbs/embed/tv/{tmdb_id}/{season}/{episode}?autoplay=1">vidsrc</option>
             <option value="111movies" data-movie="https://111movies.net/movie/{tmdb_id}" data-tv="https://111movies.net/tv/{tmdb_id}/{season}/{episode}">111movies</option>
             <option value="2embed" data-movie="https://www.2embed.cc/embed/{tmdb_id}" data-tv="https://www.2embed.skin/embedtv/{tmdb_id}&s={season}&e={episode}">2embed</option>
